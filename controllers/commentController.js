@@ -1,4 +1,5 @@
 const { Comment } = require("../models/commentModel");
+const {where} = require("sequelize");
 
 class CommentController {
   async createComment(req, res) {
@@ -23,16 +24,14 @@ class CommentController {
   }
 
   async updateComment(req, res) {
-    const { id } = req.params;
-    const updatedComment = req.body;
-    await Comment.update(updatedComment, { where: { id } });
-    return res.json(updatedComment);
+    const { id, content } = req.body;
+    const comment = await Comment.update({ content }, { where: { id } });
+    return res.json(comment);
   }
 
   async deleteComment(req, res) {
     const { id } = req.params;
-    const comment = await Comment.findByPk(id);
-    await comment.destroy();
+    const comment = await Comment.destroy({ where: { id } });
     return res.json(comment);
   }
 }

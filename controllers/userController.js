@@ -83,6 +83,17 @@ class UserController {
     );
     return res.json({ token });
   }
+
+  async getAllUsers(req, res) {
+    const user = await User.findAll();
+    return res.json(user);
+  }
+
+  async getOneUser(req, res) {
+    const { id } = req.params;
+    const user = await User.findOne({ where: { id } });
+    return res.json(user);
+  }
 }
 
 module.exports = new UserController();

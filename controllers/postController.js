@@ -23,10 +23,8 @@ class PostController {
   }
 
   async updatePost(req, res) {
-    const { id } = req.params;
-    const updatedPost = req.body;
-    console.log(updatedPost);
-    const post = await Post.update(updatedPost, { where: { id } });
+    const { id, title, content} = req.body;
+    const post = await Post.update({title, content}, { where: { id } });
     return res.json(post);
   }
 
