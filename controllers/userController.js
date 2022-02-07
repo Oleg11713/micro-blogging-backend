@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const uuid = require("uuid");
+const mailService = require("../service/mail-service");
 
 const { User } = require("../models/userModel");
 const ApiError = require("../error/ApiError");
@@ -16,7 +18,7 @@ const generateJwt = (id, displayName, age, email, role) => {
 
 class UserController {
   async registration(req, res, next) {
-    const { displayName, age, email, password, role } = req.body;
+    const { displayName, age, email, password } = req.body;
     if (!email || !password) {
       return next(ApiError.badRequest("Неверный логин или пароль"));
     }
@@ -27,13 +29,18 @@ class UserController {
       );
     }
     const passwordHash = await bcrypt.hash(password, SALT);
+    const activationLink = uuid.v4();
     const user = await User.create({
       displayName,
       age,
       email,
       password: passwordHash,
-      role,
+      activationLink,
     });
+    await mailService.sendActivationMail(
+      email,
+      `${process.env.API_URL}/api/user/activate/${activationLink}`
+    );
     const token = generateJwt(
       user.id,
       user.displayName,
@@ -44,6 +51,21 @@ class UserController {
     return res.json({ token });
   }
 
+  async activate(req, res, next) {
+    try {
+      const activationLink = req.params.link;
+      const user = await User.findOne({ where: { activationLink } });
+      if (!user) {
+        return next(ApiError.badRequest("Неккоректная ссылка активации"));
+      }
+      user.isActivated = true;
+      await user.save();
+      return res.redirect(`${process.env.CLIENT_URL}/auth/login`);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   async login(req, res, next) {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
@@ -51,6 +73,9 @@ class UserController {
       return next(
         ApiError.badRequest("Пользователя с таким email не существует")
       );
+    }
+    if (!user.isActivated) {
+      return next(ApiError.badRequest("Пользователь не подтвердил почту"));
     }
     const comparePassword = bcrypt.compareSync(password, user.password);
     if (!comparePassword) {
@@ -78,8 +103,8 @@ class UserController {
       req.user.id,
       req.user.displayName,
       req.user.age,
-      req.user.role,
-      req.user.email
+      req.user.email,
+      req.user.role
     );
     return res.json({ token });
   }
