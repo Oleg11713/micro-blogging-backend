@@ -1,13 +1,14 @@
+export {};
+
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const uuid = require("uuid");
+const bcrypt = require("bcrypt");
 
 const sequelize = require("./config/db");
 const errorHandler = require("./middleware/errorHandlingMiddleware");
-const router = require("./routes/index");
+const router = require("./routes");
 const { User, ADMIN } = require("./models/userModel");
-const bcrypt = require("bcrypt");
 
 const PORT = process.env.PORT || 5000;
 const SALT = 5;

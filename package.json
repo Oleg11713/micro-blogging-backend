@@ -6,8 +6,8 @@
     "npm": "6.4.1"
   },
   "scripts": {
-    "server": "nodemon index.js",
-    "start": "node index.js"
+    "server": "nodemon index.ts",
+    "start": "node index.ts"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -23,6 +23,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "typescript": "^4.5.5"
   }
 }

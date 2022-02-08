@@ -1,7 +1,9 @@
+export {};
+
 const { DataTypes } = require("sequelize");
+
 const { User } = require("./userModel");
 const { Post } = require("./postModel");
-
 const sequelize = require("../config/db");
 
 const Comment = sequelize.define("comments", {

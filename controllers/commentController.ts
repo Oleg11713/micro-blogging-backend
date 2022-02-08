@@ -1,8 +1,12 @@
+export {};
+
 const { Comment } = require("../models/commentModel");
-const {where} = require("sequelize");
 
 class CommentController {
-  async createComment(req, res) {
+  async createComment(
+    req: { body: { content: string; userId: number; postId: number } },
+    res: { json: (arg0: any) => any }
+  ) {
     const { content, userId, postId } = req.body;
     const comment = await Comment.create({
       content,
@@ -12,24 +16,33 @@ class CommentController {
     return res.json(comment);
   }
 
-  async getAllComments(req, res) {
+  async getAllComments(req: any, res: { json: (arg0: any) => any }) {
     const comment = await Comment.findAll();
     return res.json(comment);
   }
 
-  async getOneComment(req, res) {
+  async getOneComment(
+    req: { params: { id: string } },
+    res: { json: (arg0: any) => any }
+  ) {
     const { id } = req.params;
     const comment = await Comment.findOne({ where: { id } });
     return res.json(comment);
   }
 
-  async updateComment(req, res) {
+  async updateComment(
+    req: { body: { id: number; content: string } },
+    res: { json: (arg0: any) => any }
+  ) {
     const { id, content } = req.body;
     const comment = await Comment.update({ content }, { where: { id } });
     return res.json(comment);
   }
 
-  async deleteComment(req, res) {
+  async deleteComment(
+    req: { params: { id: string } },
+    res: { json: (arg0: any) => any }
+  ) {
     const { id } = req.params;
     const comment = await Comment.destroy({ where: { id } });
     return res.json(comment);

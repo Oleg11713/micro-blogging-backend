@@ -1,23 +1,48 @@
+export {};
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuid");
-const mailService = require("../service/mail-service");
 
+const mailService = require("../service/mail-service");
 const { User } = require("../models/userModel");
 const ApiError = require("../error/ApiError");
 
 const SALT = 5;
 
-const generateJwt = (id, displayName, age, email, role) => {
+const generateJwt = (
+  id: number,
+  displayName: string,
+  age: number,
+  email: string,
+  role: string
+) => {
   return jwt.sign(
-    { id, displayName, age, email, role },
+    {
+      id,
+      displayName,
+      age,
+      email,
+      role,
+    },
     process.env.ACCESS_TOKEN_KEY,
     { expiresIn: "24h" }
   );
 };
 
 class UserController {
-  async registration(req, res, next) {
+  async registration(
+    req: {
+      body: {
+        displayName: string;
+        age: number;
+        email: string;
+        password: string;
+      };
+    },
+    res: { json: (arg0: { token: string }) => any },
+    next: (arg0: any) => any
+  ) {
     const { displayName, age, email, password } = req.body;
     if (!email || !password) {
       return next(ApiError.badRequest("Неверный логин или пароль"));
@@ -51,7 +76,11 @@ class UserController {
     return res.json({ token });
   }
 
-  async activate(req, res, next) {
+  async activate(
+    req: { params: string },
+    res: { redirect: (arg0: string) => any },
+    next: (arg0: unknown) => void
+  ) {
     try {
       const activationLink = req.params.link;
       const user = await User.findOne({ where: { activationLink } });
@@ -66,7 +95,11 @@ class UserController {
     }
   }
 
-  async login(req, res, next) {
+  async login(
+    req: { body: { email: string; password: string } },
+    res: { json: (arg0: { token: string }) => any },
+    next: (arg0: any) => any
+  ) {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
     if (!user) {
@@ -91,14 +124,29 @@ class UserController {
     return res.json({ token });
   }
 
-  async delete(req, res) {
+  async delete(
+    req: { body: { email: string } },
+    res: { json: (arg0: any) => any }
+  ) {
     const { email } = req.body;
     const user = await User.findByPk(email);
     await user.destroy();
     return res.json(user);
   }
 
-  async check(req, res, next) {
+  async check(
+    req: {
+      user: {
+        id: number;
+        displayName: string;
+        age: number;
+        email: string;
+        role: string;
+      };
+    },
+    res: { json: (arg0: { token: string }) => any },
+    next: any
+  ) {
     const token = generateJwt(
       req.user.id,
       req.user.displayName,
@@ -109,12 +157,15 @@ class UserController {
     return res.json({ token });
   }
 
-  async getAllUsers(req, res) {
+  async getAllUsers(req: any, res: { json: (arg0: any) => any }) {
     const user = await User.findAll();
     return res.json(user);
   }
 
-  async getOneUser(req, res) {
+  async getOneUser(
+    req: { params: { id: string } },
+    res: { json: (arg0: any) => any }
+  ) {
     const { id } = req.params;
     const user = await User.findOne({ where: { id } });
     return res.json(user);

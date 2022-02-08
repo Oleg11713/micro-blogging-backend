@@ -1,7 +1,9 @@
+export {};
+
 const { DataTypes } = require("sequelize");
+const uuid = require("uuid");
 
 const sequelize = require("../config/db");
-const uuid = require("uuid");
 
 const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },

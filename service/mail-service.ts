@@ -1,6 +1,9 @@
+export {};
+
 const nodemailer = require("nodemailer");
 
 class MailService {
+  private transporter: any;
   constructor() {
     this.transporter = nodemailer.createTransport({
       host: process.env.SMPT_HOST,
@@ -13,7 +16,7 @@ class MailService {
     });
   }
 
-  async sendActivationMail(to, link) {
+  async sendActivationMail(to: string, link: string) {
     await this.transporter.sendMail({
       from: process.env.SMPT_USER,
       to,
