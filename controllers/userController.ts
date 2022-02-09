@@ -124,16 +124,6 @@ class UserController {
     return res.json({ token });
   }
 
-  async delete(
-    req: { body: { email: string } },
-    res: { json: (arg0: any) => any }
-  ) {
-    const { email } = req.body;
-    const user = await User.findByPk(email);
-    await user.destroy();
-    return res.json(user);
-  }
-
   async check(
     req: {
       user: {

@@ -4,6 +4,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
 
 const sequelize = require("./config/db");
 const errorHandler = require("./middleware/errorHandlingMiddleware");
@@ -12,6 +14,25 @@ const { User, ADMIN } = require("./models/userModel");
 
 const PORT = process.env.PORT || 5000;
 const SALT = 5;
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Library API",
+      version: "1.0.0",
+      description: "Library API Of My Micro-Blogging Project",
+    },
+    servers: [
+      {
+        url: "http://localhost:5000/api",
+      },
+    ],
+  },
+  apis: ["./routes/*.ts"],
+};
+
+const specs = swaggerJsDoc(options);
 
 const createAdmin = async () => {
   const user = await User.findOne({ where: { role: "ADMIN" } });
@@ -22,6 +43,7 @@ const createAdmin = async () => {
 };
 
 const app = express();
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use(cors());
 app.use(express.json());
 

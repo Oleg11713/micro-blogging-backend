@@ -1,6 +1,7 @@
 export {};
 
 const { Comment } = require("../models/commentModel");
+const ApiError = require("../error/ApiError");
 
 class CommentController {
   async createComment(
@@ -23,10 +24,14 @@ class CommentController {
 
   async getOneComment(
     req: { params: { id: string } },
-    res: { json: (arg0: any) => any }
+    res: { json: (arg0: any) => any },
+    next: (arg0: unknown) => void
   ) {
     const { id } = req.params;
     const comment = await Comment.findOne({ where: { id } });
+    if (!comment) {
+      return next(ApiError.badRequest("Комментарий не найден"));
+    }
     return res.json(comment);
   }
 
@@ -41,10 +46,14 @@ class CommentController {
 
   async deleteComment(
     req: { params: { id: string } },
-    res: { json: (arg0: any) => any }
+    res: { json: (arg0: any) => any },
+    next: (arg0: unknown) => void
   ) {
     const { id } = req.params;
     const comment = await Comment.destroy({ where: { id } });
+    if (!comment) {
+      return next(ApiError.badRequest("Комментарий не найден"));
+    }
     return res.json(comment);
   }
 }

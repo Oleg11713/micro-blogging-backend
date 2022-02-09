@@ -1,5 +1,6 @@
 export {};
 
+const ApiError = require("../error/ApiError");
 const { Post } = require("../models/postModel");
 
 class PostController {
@@ -23,10 +24,14 @@ class PostController {
 
   async getOnePost(
     req: { params: { id: string } },
-    res: { json: (arg0: any) => any }
+    res: { json: (arg0: any) => any },
+    next: (arg0: unknown) => void
   ) {
     const { id } = req.params;
     const post = await Post.findOne({ where: { id } });
+    if (!post) {
+      return next(ApiError.badRequest("Пост не найден"));
+    }
     return res.json(post);
   }
 
@@ -41,10 +46,14 @@ class PostController {
 
   async deletePost(
     req: { params: { id: string } },
-    res: { json: (arg0: any) => any }
+    res: { json: (arg0: any) => any },
+    next: (arg0: unknown) => void
   ) {
     const { id } = req.params;
     const post = await Post.findByPk(id);
+    if (!post) {
+      return next(ApiError.badRequest("Пост не найден"));
+    }
     await post.destroy();
     return res.json(post);
   }
