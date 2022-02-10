@@ -21,10 +21,10 @@ const router = new Router();
  *         content:
  *           type: string
  *           description: Основной текст комментария
- *         UserId:
+ *         userId:
  *           type: integer
  *           description: Id пользователя, которому принадлежит комментарий
- *         PostId:
+ *         postId:
  *           type: integer
  *           description: Id поста, под которым написан комментарий
  *       example:
@@ -48,10 +48,10 @@ const router = new Router();
  *         content:
  *           type: string
  *           description: Основной текст комментария
- *         UserId:
+ *         userId:
  *           type: integer
  *           description: Id пользователя, которому принадлежит комментарий
- *         PostId:
+ *         postId:
  *           type: integer
  *           description: Id поста, под которым написан комментарий
  *       example:

@@ -25,13 +25,17 @@ const router = new Router();
  *         content:
  *           type: string
  *           description: Основной текст поста
- *         UserId:
+ *         img:
+ *           type: string
+ *           description: Картинка
+ *         userId:
  *           type: integer
  *           description: Id пользователя, которому принадлежит пост
  *       example:
  *         id: 1
  *         title: Рандомное оглавление
  *         content: Часто бывает так, что смысл текста не имеет большого значения
+ *         img: 9782cfe6-f1dc-4f4c-9e63-8bcb853beeff.jpg
  *         UserId: 1
  */
 
@@ -52,12 +56,16 @@ const router = new Router();
  *         content:
  *           type: string
  *           description: Основной текст поста
- *         UserId:
+ *         img:
+ *           type: string
+ *           description: Картинка
+ *         userId:
  *           type: integer
  *           description: Id пользователя, которому принадлежит пост
  *       example:
  *         title: Рандомное оглавление
  *         content: Часто бывает так, что смысл текста не имеет большого значения
+ *         img: 9782cfe6-f1dc-4f4c-9e63-8bcb853beeff.jpg
  *         UserId: 1
  */
 
@@ -77,9 +85,13 @@ const router = new Router();
  *         content:
  *           type: string
  *           description: Основной текст поста
+ *         img:
+ *           type: string
+ *           description: Картинка
  *       example:
  *         title: Рандомное оглавление
  *         content: Часто бывает так, что смысл текста не имеет большого значения
+ *         img: 9782cfe6-f1dc-4f4c-9e63-8bcb853beeff.jpg
  */
 
 /**
