@@ -26,7 +26,7 @@ const router = new Router();
  *           type: string
  *           description: Основной текст поста
  *         img:
- *           type: string
+ *           type: object
  *           description: Картинка
  *         userId:
  *           type: integer

@@ -10,22 +10,32 @@ class PostController {
   async createPost(
     req: {
       body: { title: string; content: string; userId: number };
-      files: { img: any };
+      files: { images: [] | any };
     },
     res: { json: (arg0: any) => any }
   ) {
     const { title, content, userId } = req.body;
-    let fileName = "";
+    let fileNames: any = {};
+    let i = 0;
     if (req.files) {
-      const { img } = req.files;
-      fileName = uuid.v4() + ".jpg";
-      img.mv(path.resolve(__dirname, "..", "static", fileName));
+      const { images } = req.files;
+      if (Array.isArray(images)) {
+        images.map((image: { mv: (arg0: any) => any }) => {
+          const fileName = uuid.v4() + ".jpg";
+          image.mv(path.resolve(__dirname, "..", "static", fileName));
+          fileNames[i] = fileName;
+          i++;
+        });
+      } else {
+        fileNames[0] = uuid.v4() + ".jpg";
+        images.mv(path.resolve(__dirname, "..", "static", fileNames[0]));
+      }
     }
     const post = await Post.create({
       title,
       content,
       userId,
-      img: fileName,
+      images: fileNames,
     });
     return res.json(post);
   }
@@ -50,20 +60,42 @@ class PostController {
 
   async updatePost(
     req: {
-      body: { id: number; title: string; content: string };
-      files: { img: any };
+      body: { id: number; title: string; content: string; uploadedImages: [] };
+      files: { newImages: [] | any };
     },
     res: { json: (arg0: any) => any }
   ) {
-    const { id, title, content } = req.body;
-    let fileName = "";
+    const { id, title, content, uploadedImages } = req.body;
+    let fileNames: any = {};
+    let i = 0;
     if (req.files) {
-      const { img } = req.files;
-      fileName = uuid.v4() + ".jpg";
-      img.mv(path.resolve(__dirname, "..", "static", fileName));
+      const { newImages } = req.files;
+      if (Array.isArray(newImages)) {
+        newImages.map((image: { mv: (arg0: any) => any }) => {
+          const fileName = uuid.v4() + ".jpg";
+          image.mv(path.resolve(__dirname, "..", "static", fileName));
+          fileNames[i] = fileName;
+          i++;
+        });
+      } else {
+        fileNames[i] = uuid.v4() + ".jpg";
+        newImages.mv(path.resolve(__dirname, "..", "static", fileNames[0]));
+        i++;
+      }
+    }
+    if (uploadedImages) {
+      if (Array.isArray(uploadedImages)) {
+        uploadedImages.map((image) => {
+          fileNames[i] = image;
+          i++;
+        });
+      } else {
+        fileNames[i] = uploadedImages;
+        i++;
+      }
     }
     const post = await Post.update(
-      { title, content, img: fileName },
+      { title, content, images: fileNames },
       { where: { id } }
     );
     return res.json(post);
