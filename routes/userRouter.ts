@@ -209,13 +209,13 @@ router.get("/viewUser/:id", userController.getOneUser);
 
 /**
  * @swagger
- * /user/activate/{link}:
+ * /user/activate/{activationLink}:
  *   get:
  *     summary: Подтвердить аккаунт пользователя пройдя по ссылке
  *     tags: [Users]
  *     parameters:
  *       - in: path
- *         name: link
+ *         name: activationLink
  *         schema:
  *           type: string
  *         required: true
@@ -231,7 +231,7 @@ router.get("/viewUser/:id", userController.getOneUser);
  *          description: Неккоректная ссылка активации
  */
 
-router.get("/activate/:link", userController.activate);
+router.get("/activate/:activationLink", userController.activate);
 
 /**
  * @swagger

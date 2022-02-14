@@ -77,15 +77,15 @@ class UserController {
   }
 
   async activate(
-    req: { params: string },
+    req: { params: { activationLink: string } },
     res: { redirect: (arg0: string) => any },
     next: (arg0: unknown) => void
   ) {
     try {
-      const activationLink = req.params.link;
+      const { activationLink } = req.params;
       const user = await User.findOne({ where: { activationLink } });
       if (!user) {
-        return next(ApiError.badRequest("Неккоректная ссылка активации"));
+        return next(ApiError.badRequest("Некорректная ссылка активации"));
       }
       user.isActivated = true;
       await user.save();
@@ -134,8 +134,7 @@ class UserController {
         role: string;
       };
     },
-    res: { json: (arg0: { token: string }) => any },
-    next: any
+    res: { json: (arg0: { token: string }) => any }
   ) {
     const token = generateJwt(
       req.user.id,

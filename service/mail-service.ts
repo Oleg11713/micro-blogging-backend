@@ -1,5 +1,3 @@
-export {};
-
 const nodemailer = require("nodemailer");
 
 class MailService {

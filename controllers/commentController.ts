@@ -1,5 +1,3 @@
-export {};
-
 const { Comment } = require("../models/commentModel");
 const ApiError = require("../error/ApiError");
 

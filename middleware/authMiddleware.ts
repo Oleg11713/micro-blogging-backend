@@ -1,5 +1,3 @@
-export {};
-
 const jwt = require("jsonwebtoken");
 
 module.exports = function (status: number, message: string) {
