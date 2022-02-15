@@ -40,8 +40,8 @@ class UserController {
         password: string;
       };
     },
-    res: { json: (arg0: { token: string }) => any },
-    next: (arg0: any) => any
+    res: { json: (arg0: { token: string }) => object },
+    next: (arg0: unknown) => void
   ) {
     const { displayName, age, email, password } = req.body;
     if (!email || !password) {
@@ -78,7 +78,7 @@ class UserController {
 
   async activate(
     req: { params: { activationLink: string } },
-    res: { redirect: (arg0: string) => any },
+    res: { redirect: (arg0: string) => object },
     next: (arg0: unknown) => void
   ) {
     try {
@@ -97,8 +97,8 @@ class UserController {
 
   async login(
     req: { body: { email: string; password: string } },
-    res: { json: (arg0: { token: string }) => any },
-    next: (arg0: any) => any
+    res: { json: (arg0: { token: string }) => object },
+    next: (arg0: unknown) => void
   ) {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
@@ -134,7 +134,7 @@ class UserController {
         role: string;
       };
     },
-    res: { json: (arg0: { token: string }) => any }
+    res: { json: (arg0: { token: string }) => object }
   ) {
     const token = generateJwt(
       req.user.id,
@@ -146,14 +146,14 @@ class UserController {
     return res.json({ token });
   }
 
-  async getAllUsers(req: any, res: { json: (arg0: any) => any }) {
+  async getAllUsers(req: object, res: { json: (arg0: object) => object }) {
     const user = await User.findAll();
     return res.json(user);
   }
 
   async getOneUser(
     req: { params: { id: string } },
-    res: { json: (arg0: any) => any }
+    res: { json: (arg0: object) => object }
   ) {
     const { id } = req.params;
     const user = await User.findOne({ where: { id } });

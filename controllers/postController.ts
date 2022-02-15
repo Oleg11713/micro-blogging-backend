@@ -12,7 +12,7 @@ class PostController {
       body: { title: string; content: string; userId: number };
       files: { images: [] | any };
     },
-    res: { json: (arg0: any) => any }
+    res: { json: (arg0: object) => object }
   ) {
     const { title, content, userId } = req.body;
     let fileNames: any = {};
@@ -20,7 +20,7 @@ class PostController {
     if (req.files) {
       const { images } = req.files;
       if (Array.isArray(images)) {
-        images.map((image: { mv: (arg0: any) => any }) => {
+        images.map((image: { mv: (arg0: object) => object }) => {
           const fileName = uuid.v4() + ".jpg";
           image.mv(path.resolve(__dirname, "..", "static", fileName));
           fileNames[i] = fileName;
@@ -40,14 +40,14 @@ class PostController {
     return res.json(post);
   }
 
-  async getAllPosts(req: any, res: { json: (arg0: any) => any }) {
+  async getAllPosts(req: object, res: { json: (arg0: object) => object }) {
     const post = await Post.findAll();
     return res.json(post);
   }
 
   async getOnePost(
     req: { params: { id: string } },
-    res: { json: (arg0: any) => any },
+    res: { json: (arg0: object) => object },
     next: (arg0: unknown) => void
   ) {
     const { id } = req.params;
@@ -63,7 +63,7 @@ class PostController {
       body: { id: number; title: string; content: string; uploadedImages: [] };
       files: { newImages: [] | any };
     },
-    res: { json: (arg0: any) => any }
+    res: { json: (arg0: object) => object }
   ) {
     const { id, title, content, uploadedImages } = req.body;
     let fileNames: any = {};
@@ -71,7 +71,7 @@ class PostController {
     if (req.files) {
       const { newImages } = req.files;
       if (Array.isArray(newImages)) {
-        newImages.map((image: { mv: (arg0: any) => any }) => {
+        newImages.map((image: { mv: (arg0: object) => object }) => {
           const fileName = uuid.v4() + ".jpg";
           image.mv(path.resolve(__dirname, "..", "static", fileName));
           fileNames[i] = fileName;
@@ -103,7 +103,7 @@ class PostController {
 
   async deletePost(
     req: { params: { id: string } },
-    res: { json: (arg0: any) => any },
+    res: { json: (arg0: object) => object },
     next: (arg0: unknown) => void
   ) {
     const { id } = req.params;

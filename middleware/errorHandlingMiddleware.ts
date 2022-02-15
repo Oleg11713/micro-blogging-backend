@@ -4,15 +4,14 @@ const ApiError = require("../error/ApiError");
 
 module.exports = (
   err: { status: number; message: string },
-  req: any,
+  req: object,
   res: {
     status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: { message: any }): any; new (): any };
+      (): object;
+      new (): object;
+      json: { (arg0: { message: string }): void; new (): object };
     };
-  },
-  next: any
+  }
 ) => {
   if (err instanceof ApiError) {
     return res.status(err.status).json({ message: err.message });

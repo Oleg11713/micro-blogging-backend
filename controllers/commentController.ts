@@ -4,7 +4,7 @@ const ApiError = require("../error/ApiError");
 class CommentController {
   async createComment(
     req: { body: { content: string; userId: number; postId: number } },
-    res: { json: (arg0: any) => any }
+    res: { json: (arg0: object) => object }
   ) {
     const { content, userId, postId } = req.body;
     const comment = await Comment.create({
@@ -15,14 +15,14 @@ class CommentController {
     return res.json(comment);
   }
 
-  async getAllComments(req: any, res: { json: (arg0: any) => any }) {
+  async getAllComments(req: object, res: { json: (arg0: object) => object }) {
     const comment = await Comment.findAll();
     return res.json(comment);
   }
 
   async getOneComment(
     req: { params: { id: string } },
-    res: { json: (arg0: any) => any },
+    res: { json: (arg0: object) => object },
     next: (arg0: unknown) => void
   ) {
     const { id } = req.params;
@@ -35,7 +35,7 @@ class CommentController {
 
   async updateComment(
     req: { body: { id: number; content: string } },
-    res: { json: (arg0: any) => any }
+    res: { json: (arg0: object) => object }
   ) {
     const { id, content } = req.body;
     const comment = await Comment.update({ content }, { where: { id } });
@@ -44,7 +44,7 @@ class CommentController {
 
   async deleteComment(
     req: { params: { id: string } },
-    res: { json: (arg0: any) => any },
+    res: { json: (arg0: object) => object },
     next: (arg0: unknown) => void
   ) {
     const { id } = req.params;
