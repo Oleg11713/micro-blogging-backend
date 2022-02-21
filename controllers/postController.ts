@@ -7,7 +7,7 @@ const { Post } = require("../models/postModel");
 
 class PostController {
   async createPost(
-    req: {
+    req: Request & {
       body: { title: string; content: string; userId: number };
       files: {
         images:
@@ -58,7 +58,7 @@ class PostController {
   }
 
   async updatePost(
-    req: {
+    req: Request & {
       body: { id: number; title: string; content: string; uploadedImages: [] };
       files: {
         newImages:
