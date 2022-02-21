@@ -1,5 +1,4 @@
-export {};
-
+import { NextFunction, Request, Response } from "express";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuid");
@@ -31,18 +30,7 @@ const generateJwt = (
 };
 
 class UserController {
-  async registration(
-    req: {
-      body: {
-        displayName: string;
-        age: number;
-        email: string;
-        password: string;
-      };
-    },
-    res: { json: (arg0: { token: string }) => object },
-    next: (arg0: unknown) => void
-  ) {
+  async registration(req: Request, res: Response, next: NextFunction) {
     const { displayName, age, email, password } = req.body;
     if (!email || !password) {
       return next(ApiError.badRequest("Неверный логин или пароль"));
@@ -76,11 +64,7 @@ class UserController {
     return res.json({ token });
   }
 
-  async activate(
-    req: { params: { activationLink: string } },
-    res: { redirect: (arg0: string) => object },
-    next: (arg0: unknown) => void
-  ) {
+  async activate(req: Request, res: Response, next: NextFunction) {
     try {
       const { activationLink } = req.params;
       const user = await User.findOne({ where: { activationLink } });
@@ -95,11 +79,7 @@ class UserController {
     }
   }
 
-  async login(
-    req: { body: { email: string; password: string } },
-    res: { json: (arg0: { token: string }) => object },
-    next: (arg0: unknown) => void
-  ) {
+  async login(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
     if (!user) {
@@ -134,7 +114,7 @@ class UserController {
         role: string;
       };
     },
-    res: { json: (arg0: { token: string }) => object }
+    res: Response
   ) {
     const token = generateJwt(
       req.user.id,
@@ -146,15 +126,12 @@ class UserController {
     return res.json({ token });
   }
 
-  async getAllUsers(req: object, res: { json: (arg0: object) => object }) {
+  async getAllUsers(req: Request, res: Response) {
     const user = await User.findAll();
     return res.json(user);
   }
 
-  async getOneUser(
-    req: { params: { id: string } },
-    res: { json: (arg0: object) => object }
-  ) {
+  async getOneUser(req: Request, res: Response) {
     const { id } = req.params;
     const user = await User.findOne({ where: { id } });
     return res.json(user);

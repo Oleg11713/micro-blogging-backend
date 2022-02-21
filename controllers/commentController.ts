@@ -1,11 +1,9 @@
+import { Request, Response, NextFunction } from "express";
 const { Comment } = require("../models/commentModel");
 const ApiError = require("../error/ApiError");
 
 class CommentController {
-  async createComment(
-    req: { body: { content: string; userId: number; postId: number } },
-    res: { json: (arg0: object) => object }
-  ) {
+  async createComment(req: Request, res: Response) {
     const { content, userId, postId } = req.body;
     const comment = await Comment.create({
       content,
@@ -15,16 +13,12 @@ class CommentController {
     return res.json(comment);
   }
 
-  async getAllComments(req: object, res: { json: (arg0: object) => object }) {
+  async getAllComments(req: Request, res: Response) {
     const comment = await Comment.findAll();
     return res.json(comment);
   }
 
-  async getOneComment(
-    req: { params: { id: string } },
-    res: { json: (arg0: object) => object },
-    next: (arg0: unknown) => void
-  ) {
+  async getOneComment(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const comment = await Comment.findOne({ where: { id } });
     if (!comment) {
@@ -33,20 +27,13 @@ class CommentController {
     return res.json(comment);
   }
 
-  async updateComment(
-    req: { body: { id: number; content: string } },
-    res: { json: (arg0: object) => object }
-  ) {
+  async updateComment(req: Request, res: Response) {
     const { id, content } = req.body;
     const comment = await Comment.update({ content }, { where: { id } });
     return res.json(comment);
   }
 
-  async deleteComment(
-    req: { params: { id: string } },
-    res: { json: (arg0: object) => object },
-    next: (arg0: unknown) => void
-  ) {
+  async deleteComment(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const comment = await Comment.destroy({ where: { id } });
     if (!comment) {

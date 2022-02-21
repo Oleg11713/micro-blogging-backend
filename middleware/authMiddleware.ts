@@ -1,16 +1,11 @@
+import { NextFunction, Response } from "express";
 const jwt = require("jsonwebtoken");
 
 module.exports = function (status: number, message: string) {
   return function (
     req: { method: string; headers: { authorization: string }; user: Object },
-    res: {
-      status: (arg0: number) => {
-        (): object;
-        new (): object;
-        json: { (arg0: { message: string }): void; new (): object };
-      };
-    },
-    next: () => void
+    res: Response,
+    next: NextFunction
   ) {
     if (req.method === "OPTION") {
       next();

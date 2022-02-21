@@ -1,5 +1,3 @@
-export {};
-
 class ApiError extends Error {
   private status: number;
   constructor(status: number, message: string) {

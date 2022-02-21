@@ -1,7 +1,6 @@
-export {};
-
 const uuid = require("uuid");
 const path = require("path");
+import { NextFunction, Request, Response } from "express";
 
 const ApiError = require("../error/ApiError");
 const { Post } = require("../models/postModel");
@@ -10,12 +9,16 @@ class PostController {
   async createPost(
     req: {
       body: { title: string; content: string; userId: number };
-      files: { images: [] | any };
+      files: {
+        images:
+          | { mv: (arg0: object) => object }[]
+          | { mv: (arg0: object) => object };
+      };
     },
-    res: { json: (arg0: object) => object }
+    res: Response
   ) {
     const { title, content, userId } = req.body;
-    let fileNames: any = {};
+    let fileNames: string[] = [];
     let i = 0;
     if (req.files) {
       const { images } = req.files;
@@ -23,11 +26,11 @@ class PostController {
         images.map((image: { mv: (arg0: object) => object }) => {
           const fileName = uuid.v4() + ".jpg";
           image.mv(path.resolve(__dirname, "..", "static", fileName));
-          fileNames[i] = fileName;
+          fileNames.push(fileName);
           i++;
         });
       } else {
-        fileNames[0] = uuid.v4() + ".jpg";
+        fileNames.push(uuid.v4() + ".jpg");
         images.mv(path.resolve(__dirname, "..", "static", fileNames[0]));
       }
     }
@@ -40,16 +43,12 @@ class PostController {
     return res.json(post);
   }
 
-  async getAllPosts(req: object, res: { json: (arg0: object) => object }) {
+  async getAllPosts(req: Request, res: Response) {
     const post = await Post.findAll();
     return res.json(post);
   }
 
-  async getOnePost(
-    req: { params: { id: string } },
-    res: { json: (arg0: object) => object },
-    next: (arg0: unknown) => void
-  ) {
+  async getOnePost(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const post = await Post.findOne({ where: { id } });
     if (!post) {
@@ -61,37 +60,36 @@ class PostController {
   async updatePost(
     req: {
       body: { id: number; title: string; content: string; uploadedImages: [] };
-      files: { newImages: [] | any };
+      files: {
+        newImages:
+          | { mv: (arg0: object) => object }[]
+          | { mv: (arg0: object) => object };
+      };
     },
-    res: { json: (arg0: object) => object }
+    res: Response
   ) {
     const { id, title, content, uploadedImages } = req.body;
-    let fileNames: any = {};
-    let i = 0;
+    let fileNames: string[] = [];
     if (req.files) {
       const { newImages } = req.files;
       if (Array.isArray(newImages)) {
         newImages.map((image: { mv: (arg0: object) => object }) => {
           const fileName = uuid.v4() + ".jpg";
           image.mv(path.resolve(__dirname, "..", "static", fileName));
-          fileNames[i] = fileName;
-          i++;
+          fileNames.push(fileName);
         });
       } else {
-        fileNames[i] = uuid.v4() + ".jpg";
+        fileNames.push(uuid.v4() + ".jpg");
         newImages.mv(path.resolve(__dirname, "..", "static", fileNames[0]));
-        i++;
       }
     }
     if (uploadedImages) {
       if (Array.isArray(uploadedImages)) {
         uploadedImages.map((image) => {
-          fileNames[i] = image;
-          i++;
+          fileNames.push(image);
         });
       } else {
-        fileNames[i] = uploadedImages;
-        i++;
+        fileNames.push(uploadedImages);
       }
     }
     const post = await Post.update(
@@ -101,11 +99,7 @@ class PostController {
     return res.json(post);
   }
 
-  async deletePost(
-    req: { params: { id: string } },
-    res: { json: (arg0: object) => object },
-    next: (arg0: unknown) => void
-  ) {
+  async deletePost(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const post = await Post.findByPk(id);
     if (!post) {

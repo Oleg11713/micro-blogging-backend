@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 
 class MailService {
-  private transporter: any;
+  private transporter: { sendMail: (arg0: object) => object };
   constructor() {
     this.transporter = nodemailer.createTransport({
       host: process.env.SMPT_HOST,

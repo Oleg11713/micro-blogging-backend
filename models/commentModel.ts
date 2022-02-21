@@ -1,6 +1,4 @@
-export {};
-
-const { DataTypes } = require("sequelize");
+import DataTypes from "sequelize";
 
 const { User } = require("./userModel");
 const { Post } = require("./postModel");

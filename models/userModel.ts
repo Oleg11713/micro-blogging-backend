@@ -1,6 +1,4 @@
-export {};
-
-const { DataTypes } = require("sequelize");
+import DataTypes from "sequelize";
 const uuid = require("uuid");
 
 const sequelize = require("../config/db");
