@@ -59,7 +59,7 @@ const start = async () => {
   try {
     await sequelize.authenticate();
     await sequelize.sync();
-    app.listen(5000, () => console.log(`Server started on port ${PORT}`));
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
     await createAdmin();
   } catch (error) {
     console.log(error);

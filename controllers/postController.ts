@@ -5,18 +5,26 @@ import { NextFunction, Request, Response } from "express";
 const ApiError = require("../error/ApiError");
 const { Post } = require("../models/postModel");
 
+interface IPostRequest extends Request {
+  body: {
+    id: number;
+    title: string;
+    content: string;
+    userId: number;
+    uploadedImages: string[];
+  };
+  files: {
+    images:
+      | { mv: (arg0: object) => object }[]
+      | { mv: (arg0: object) => object };
+    newImages:
+      | { mv: (arg0: object) => object }[]
+      | { mv: (arg0: object) => object };
+  };
+}
+
 class PostController {
-  async createPost(
-    req: Request & {
-      body: { title: string; content: string; userId: number };
-      files: {
-        images:
-          | { mv: (arg0: object) => object }[]
-          | { mv: (arg0: object) => object };
-      };
-    },
-    res: Response
-  ) {
+  async createPost(req: IPostRequest, res: Response) {
     const { title, content, userId } = req.body;
     let fileNames: string[] = [];
     let i = 0;
@@ -43,12 +51,12 @@ class PostController {
     return res.json(post);
   }
 
-  async getAllPosts(req: Request, res: Response) {
+  async getAllPosts(req: IPostRequest, res: Response) {
     const post = await Post.findAll();
     return res.json(post);
   }
 
-  async getOnePost(req: Request, res: Response, next: NextFunction) {
+  async getOnePost(req: IPostRequest, res: Response, next: NextFunction) {
     const { id } = req.params;
     const post = await Post.findOne({ where: { id } });
     if (!post) {
@@ -57,17 +65,7 @@ class PostController {
     return res.json(post);
   }
 
-  async updatePost(
-    req: Request & {
-      body: { id: number; title: string; content: string; uploadedImages: [] };
-      files: {
-        newImages:
-          | { mv: (arg0: object) => object }[]
-          | { mv: (arg0: object) => object };
-      };
-    },
-    res: Response
-  ) {
+  async updatePost(req: IPostRequest, res: Response) {
     const { id, title, content, uploadedImages } = req.body;
     let fileNames: string[] = [];
     if (req.files) {
@@ -85,7 +83,7 @@ class PostController {
     }
     if (uploadedImages) {
       if (Array.isArray(uploadedImages)) {
-        uploadedImages.map((image) => {
+        uploadedImages.map((image: string) => {
           fileNames.push(image);
         });
       } else {

@@ -9,6 +9,16 @@ const ApiError = require("../error/ApiError");
 
 const SALT = 5;
 
+interface IUserRequest extends Request {
+  body: {
+    id: number;
+    displayName: string;
+    age: number;
+    email: string;
+    password: string;
+  };
+}
+
 const generateJwt = (
   id: number,
   displayName: string,
@@ -30,7 +40,7 @@ const generateJwt = (
 };
 
 class UserController {
-  async registration(req: Request, res: Response, next: NextFunction) {
+  async registration(req: IUserRequest, res: Response, next: NextFunction) {
     const { displayName, age, email, password } = req.body;
     if (!email || !password) {
       return next(ApiError.badRequest("Неверный логин или пароль"));
@@ -64,7 +74,7 @@ class UserController {
     return res.json({ token });
   }
 
-  async activate(req: Request, res: Response, next: NextFunction) {
+  async activate(req: IUserRequest, res: Response, next: NextFunction) {
     try {
       const { activationLink } = req.params;
       const user = await User.findOne({ where: { activationLink } });
@@ -79,7 +89,7 @@ class UserController {
     }
   }
 
-  async login(req: Request, res: Response, next: NextFunction) {
+  async login(req: IUserRequest, res: Response, next: NextFunction) {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
     if (!user) {
@@ -126,12 +136,12 @@ class UserController {
     return res.json({ token });
   }
 
-  async getAllUsers(req: Request, res: Response) {
+  async getAllUsers(req: IUserRequest, res: Response) {
     const user = await User.findAll();
     return res.json(user);
   }
 
-  async getOneUser(req: Request, res: Response) {
+  async getOneUser(req: IUserRequest, res: Response) {
     const { id } = req.params;
     const user = await User.findOne({ where: { id } });
     return res.json(user);
